@@ -34,19 +34,13 @@ La arquitectura limpia divide el código en capas bien definidas. Cada capa tien
 3. **Capa de Infraestructura (Infrastructure)**: Esta capa maneja los detalles técnicos, como el acceso a bases de datos, servicios web, API externas, etc.
 4. **Capa de Presentación (Presentation)**: Se encarga de la interfaz con el usuario (por ejemplo, aplicaciones de consola, aplicaciones web, etc.).
 
-El siguiente diagrama ilustra cómo se estructuran las capas en Clean Architecture:
+El siguiente diagrama ilustra cómo se estructuran las capas en Clean Architecture utilizando Mermaid:
 
 ```mermaid
-graph LR
+graph TD
     A[Presentation Layer] --> B[Application Layer]
     B --> C[Domain Layer]
     C --> D[Infrastructure Layer]
-    classDef layerStyle fill:#F9F,stroke:#333,stroke-width:4px;
-    class A,B,C,D layerStyle;
-    class A fill:#FFDDC1;
-    class B fill:#FFABAB;
-    class C fill:#FFC3A0;
-    class D fill:#FF7F50;
 ```
 
 ---
@@ -180,7 +174,7 @@ En aplicaciones que interactúan con servicios externos, como APIs, el uso de **
 
 ---
 
-## Diagrama del Flujo del Proyecto
+## Diagrama del Flujo del Proyecto con Mermaid
 
 El siguiente diagrama muestra cómo se procesan los datos a través de las diferentes capas de la aplicación, siguiendo la **Clean Architecture**:
 
@@ -189,13 +183,9 @@ graph TD
     A[Presentation Layer] --> B[Application Layer]
     B --> C[Domain Layer]
     C --> D[Infrastructure Layer]
-    classDef layerStyle fill:#F9F,stroke:#333,stroke-width:4px;
-    class A,B,C,D layerStyle;
-    class A fill:#FFDDC1;
-    class B fill:#FFABAB;
-    class C fill:#FFC3A0;
-    class D fill:#FF7F50;
 ```
+
+Este diagrama ilustra cómo las capas interactúan, con **Presentación** (interfaz de usuario) en la parte superior, pasando a la **Aplicación** (casos de uso), luego a la **Dominio** (reglas de negocio), y finalmente a la **Infraestructura** (servicios externos como APIs).
 
 ---
 

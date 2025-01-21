@@ -1,57 +1,64 @@
-Curso Completo: Procesamiento de Datos desde Streams con Clean Architecture en C#
-Índice del Curso
-Introducción: ¿Qué aprenderás en este curso?
-Conceptos Fundamentales: Streams en C#
-¿Qué es un stream?
-Operaciones básicas con streams.
-Introducción a Clean Architecture
-¿Qué es Clean Architecture?
-Principios SOLID en la arquitectura.
-Estructura del Proyecto: Análisis del Código
-Dominio (Core)
-Aplicación (Application)
-Infraestructura (Infrastructure)
-Presentación (Presentation)
-Desglose Detallado del Código
-Solicitud HTTP y manejo del stream.
-Procesamiento de datos con Utf8JsonReader.
-Procesamiento Incremental y Flujo de Control
-Flujo de ejecución explicado paso a paso.
-Uso de delegados y desacoplamiento.
-Práctica Avanzada: Optimización y Mejoras
-Procesamiento paralelo y pipelines.
-Manejo de errores y logging.
-Conclusiones y Siguientes Pasos
-Optimización de Rendimiento
-Reducción del tamaño del buffer.
-Uso de MemoryPool<byte>.
-Procesamiento por lotes.
-Balanceo dinámico de consumidores.
-Pruebas Automatizadas
-Pruebas unitarias e integración.
-Mocking de servicios.
-Buenas Prácticas y Documentación
-Uso de dependencias y logging.
-Monitoreo y métricas.
-Documentación y preparación del código.
-Capítulo 1: Introducción
-¿Qué aprenderás en este curso?
-En este curso, aprenderás cómo manejar grandes volúmenes de datos de manera eficiente utilizando streams en C#. Aprenderás a:
 
-Procesar datos en tiempo real sin cargarlos completamente en memoria.
-Aplicar principios de Clean Architecture para crear sistemas escalables.
-Optimizar el rendimiento de tu aplicación utilizando técnicas avanzadas como procesamiento paralelo y pipelines.
-Manejar errores de manera eficiente y registrar eventos usando ILogger.
-Capítulo 2: Streams en C#
-¿Qué es un Stream?
+# **Curso Completo: Procesamiento de Datos desde Streams con Clean Architecture en C#**
+
+## **Índice del Curso**
+
+1. **Introducción: ¿Qué aprenderás en este curso?**
+2. **Conceptos Fundamentales: Streams en C#**
+   - ¿Qué es un stream?
+   - Operaciones básicas con streams.
+3. **Introducción a Clean Architecture**
+   - ¿Qué es Clean Architecture?
+   - Principios SOLID en la arquitectura.
+4. **Estructura del Proyecto: Análisis del Código**
+   - Dominio (Core)
+   - Aplicación (Application)
+   - Infraestructura (Infrastructure)
+   - Presentación (Presentation)
+5. **Desglose Detallado del Código**
+   - Solicitud HTTP y manejo del stream.
+   - Procesamiento de datos con `Utf8JsonReader`.
+6. **Procesamiento Incremental y Flujo de Control**
+   - Flujo de ejecución explicado paso a paso.
+   - Uso de delegados y desacoplamiento.
+7. **Práctica Avanzada: Optimización y Mejoras**
+   - Procesamiento paralelo y pipelines.
+   - Manejo de errores y logging.
+8. **Conclusiones y Siguientes Pasos**
+9. **Optimización de Rendimiento**
+   - Reducción del tamaño del buffer.
+   - Uso de `MemoryPool<byte>`.
+   - Procesamiento por lotes.
+   - Balanceo dinámico de consumidores.
+10. **Pruebas Automatizadas**
+    - Pruebas unitarias e integración.
+    - Mocking de servicios.
+11. **Buenas Prácticas y Documentación**
+    - Uso de dependencias y logging.
+    - Monitoreo y métricas.
+    - Documentación y preparación del código.
+
+---
+
+## **Introducción: ¿Qué aprenderás en este curso?**
+
+En este curso aprenderás a manejar grandes volúmenes de datos de manera eficiente utilizando streams en C#. Aprenderás a:
+- **Procesar datos en tiempo real** sin cargarlos completamente en memoria.
+- **Aplicar principios de Clean Architecture** para crear sistemas escalables.
+- **Optimizar el rendimiento** de tu aplicación utilizando técnicas avanzadas como procesamiento paralelo y pipelines.
+- **Manejar errores** de manera eficiente y registrar eventos usando **ILogger**.
+
+---
+
+## **Capítulo 2: Streams en C#**
+
+### **¿Qué es un stream?**
 Un stream es una secuencia de datos que fluye de un origen a un destino. Es un flujo continuo de bytes que se puede leer o escribir de manera incremental. Los streams son una parte esencial para manejar grandes cantidades de datos sin sobrecargar la memoria del sistema.
 
-Operaciones Básicas con Streams
-En C#, los streams pueden ser utilizados para leer y escribir datos de manera eficiente. Aquí tienes algunos ejemplos clave:
+### **Operaciones Básicas con Streams**
 
-Ejemplo de Lectura desde un Stream
-csharp
-Copiar
+#### **Ejemplo de Lectura desde un Stream**
+```csharp
 using System;
 using System.IO;
 
@@ -65,9 +72,10 @@ class StreamExample
         Console.WriteLine($"Bytes leídos: {bytesRead}");
     }
 }
-Ejemplo de Escritura en un Stream
-csharp
-Copiar
+```
+
+#### **Ejemplo de Escritura en un Stream**
+```csharp
 using System;
 using System.IO;
 
@@ -81,25 +89,36 @@ class StreamExample
         Console.WriteLine("Datos escritos.");
     }
 }
-Capítulo 3: Clean Architecture
-¿Qué es Clean Architecture?
-Clean Architecture es un patrón de diseño que organiza el código en capas para asegurar que cada parte del sistema tenga una única responsabilidad y que las dependencias fluyan en una dirección predecible.
+```
 
-Capas de Clean Architecture
-Dominio (Core): Contiene las reglas de negocio y entidades centrales.
-Aplicación (Application): Implementa los casos de uso y lógica de aplicación.
-Infraestructura (Infrastructure): Maneja conexiones externas, como APIs o bases de datos.
-Presentación (Presentation): Controla la interacción con el usuario.
-Principios SOLID
-S: Responsabilidad única (Single Responsibility).
-O: Abierto/Cerrado (Open/Closed).
-L: Sustitución de Liskov (Liskov Substitution).
-I: Segregación de Interfaces (Interface Segregation).
-D: Inversión de Dependencias (Dependency Inversion).
-Capítulo 4: Análisis del Código
-Estructura del Proyecto
-plaintext
-Copiar
+---
+
+## **Capítulo 3: Clean Architecture**
+
+### **¿Qué es Clean Architecture?**
+
+Clean Architecture es un enfoque de diseño de software que busca separar la lógica de negocio de los detalles de implementación. Esto garantiza que las aplicaciones sean modulares, fáciles de probar y de mantener.
+
+### **Capas de Clean Architecture**
+1. **Dominio (Core)**: Contiene las reglas de negocio y las entidades principales.
+2. **Aplicación (Application)**: Implementa los casos de uso.
+3. **Infraestructura (Infrastructure)**: Maneja las dependencias externas como APIs, bases de datos, etc.
+4. **Presentación (Presentation)**: Controla la interacción con el usuario.
+
+#### **Principios SOLID**
+- **S**: Responsabilidad única (Single Responsibility).
+- **O**: Abierto/Cerrado (Open/Closed).
+- **L**: Sustitución de Liskov (Liskov Substitution).
+- **I**: Segregación de Interfaces (Interface Segregation).
+- **D**: Inversión de Dependencias (Dependency Inversion).
+
+---
+
+## **Capítulo 4: Análisis del Código**
+
+### **Estructura del Proyecto**
+
+```plaintext
 ExchangeRateApp/
 ├── Core/
 │   ├── ExchangeRateDetail.cs
@@ -112,137 +131,61 @@ ExchangeRateApp/
 │   └── ExchangeRateApi.cs
 └── Presentation/
     └── Program.cs
-Core: Dominio
-Clase ExchangeRateDetail
-Representa un registro JSON obtenido de la API:
+```
 
-json
-Copiar
+---
+
+## **Capítulo 5: Desglose Detallado del Código**
+
+### **Solicitud HTTP y Manejo del Stream**
+La aplicación realiza una solicitud HTTP usando `HttpClient` y recibe un stream de respuesta. Este stream es procesado en fragmentos para evitar cargar toda la respuesta en memoria.
+
+```csharp
+await using var responseStream = await response.Content.ReadAsStreamAsync();
+await ProcessStreamAsync(responseStream, processEntry);
+```
+
+### **Procesamiento de Datos con `Utf8JsonReader`**
+Usamos `Utf8JsonReader` para procesar los datos sin cargar el JSON completo en memoria.
+
+```csharp
+var buffer = new byte[8192];
+int bytesRead;
+
+while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
 {
-  "fecPublica": "2025-01-01",
-  "valTipo": "3.75",
-  "codTipo": "C"
-}
-Código:
-
-csharp
-Copiar
-public class ExchangeRateDetail
-{
-    [JsonPropertyName("fecPublica")]
-    public string Date { get; set; } = string.Empty;
-
-    [JsonPropertyName("valTipo")]
-    public string Value { get; set; } = string.Empty;
-
-    [JsonPropertyName("codTipo")]
-    public string Type { get; set; } = string.Empty;
-}
-Clase ExchangeRateResult
-Convierte los datos JSON en un formato amigable:
-
-csharp
-Copiar
-public class ExchangeRateResult
-{
-    public string Fecha { get; set; } = string.Empty;
-    public string Compra { get; set; } = "N/A";
-    public string Venta { get; set; } = "N/A";
-}
-Application: Procesamiento
-Clase ExchangeRateProcessor
-csharp
-Copiar
-public class ExchangeRateProcessor : IExchangeRateProcessor
-{
-    private readonly Dictionary<string, ExchangeRateResult> _results = new();
-
-    public void ProcessEntry(ExchangeRateDetail entry)
+    var reader = new Utf8JsonReader(new ReadOnlySpan<byte>(buffer, 0, bytesRead));
+    while (reader.Read())
     {
-        if (!_results.ContainsKey(entry.Date))
-            _results[entry.Date] = new ExchangeRateResult { Fecha = entry.Date };
-
-        if (entry.Type == "C")
-            _results[entry.Date].Compra = entry.Value;
-        else if (entry.Type == "V")
-            _results[entry.Date].Venta = entry.Value;
-    }
-
-    public IEnumerable<ExchangeRateResult> GetResults() => _results.Values;
-}
-Infrastructure: Conexión con la API
-Clase ExchangeRateApi
-csharp
-Copiar
-public class ExchangeRateApi : IExchangeRateApi
-{
-    private const string ApiUrl = "https://e-consulta.sunat.gob.pe/cl-at-ittipcam/tcS01Alias/listarTipoCambio";
-    private const string ApiToken = "xon89wgbu8o6330q1mida90siv1mtkj1";
-
-    private readonly HttpClient _httpClient;
-
-    public ExchangeRateApi(HttpClient httpClient)
-    {
-        _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-    }
-
-    public async Task ProcessExchangeRatesAsync(int year, int month, Action<ExchangeRateDetail> processEntry)
-    {
-        var payload = new
+        if (reader.TokenType == JsonTokenType.StartObject)
         {
-            anio = year,
-            mes = month - 1,
-            token = ApiToken
-        };
-
-        using var payloadStream = new MemoryStream();
-        await JsonSerializer.SerializeAsync(payloadStream, payload);
-        payloadStream.Position = 0;
-
-        using var content = new StreamContent(payloadStream);
-        content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-
-        using var response = await _httpClient.PostAsync(ApiUrl, content);
-        response.EnsureSuccessStatusCode();
-
-        await using var responseStream = await response.Content.ReadAsStreamAsync();
-        await ProcessStreamAsync(responseStream, processEntry);
-    }
-
-    private async Task ProcessStreamAsync(Stream stream, Action<ExchangeRateDetail> processEntry)
-    {
-        var buffer = new byte[8192];
-        int bytesRead;
-
-        while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
-        {
-            var reader = new Utf8JsonReader(new ReadOnlySpan<byte>(buffer, 0, bytesRead));
-
-            while (reader.Read())
-            {
-                if (reader.TokenType == JsonTokenType.StartObject)
-                {
-                    var entry = JsonSerializer.Deserialize<ExchangeRateDetail>(ref reader);
-                    if (entry != null)
-                        processEntry(entry);
-                }
-            }
+            var entry = JsonSerializer.Deserialize<ExchangeRateDetail>(ref reader);
+            if (entry != null)
+                processEntry(entry);
         }
     }
 }
-Capítulo 5: Procesamiento Incremental y Flujo de Control
-Flujo de Ejecución Explicado
-Entrada del usuario: El programa solicita el año y el mes al usuario.
-Construcción del payload: El programa crea el payload con los datos del año y mes.
-Solicitud HTTP: El payload se envía a la API para obtener los datos de tipo de cambio.
-Procesamiento de datos: A medida que los datos llegan, son procesados en fragmentos.
-Capítulo 6: Práctica Avanzada - Optimización y Mejoras
-Procesamiento Paralelo
-El procesamiento paralelo mejora el rendimiento al permitir que múltiples hilos procesen los datos al mismo tiempo. Usamos un Productor para descargar los datos y Consumidores para procesarlos en paralelo.
+```
 
-Código de Productor y Consumidor
-csharp
-Copiar
+---
+
+## **Capítulo 6: Procesamiento Incremental y Flujo de Control**
+
+El flujo de ejecución sigue estos pasos:
+1. **Entrada del usuario**: El programa solicita el año y el mes al usuario.
+2. **Construcción del Payload**: El programa crea un payload para la solicitud a la API.
+3. **Solicitud HTTP**: El payload se envía y se recibe el stream.
+4. **Procesamiento**: A medida que se reciben fragmentos, se procesan y se almacenan.
+
+---
+
+## **Capítulo 7: Práctica Avanzada - Optimización y Mejoras**
+
+### **Procesamiento Paralelo**
+En lugar de procesar los datos secuencialmente, puedes usar varios hilos (productores y consumidores) para manejar múltiples tareas simultáneamente.
+
+#### Código de Productor y Consumidor
+```csharp
 var producer = Task.Run(async () =>
 {
     while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
@@ -260,31 +203,41 @@ var consumers = Enumerable.Range(0, Environment.ProcessorCount).Select(_ => Task
 })).ToArray();
 
 await Task.WhenAll(producer, Task.WhenAll(consumers));
-Capítulo 7: Manejo de Errores y Logging
-Uso de Logging
-Usar ILogger para registrar errores y eventos es una buena práctica en sistemas paralelos, ya que te permite saber qué está sucediendo en cada parte del proceso.
+```
 
-Ejemplo de Logging
-csharp
-Copiar
+---
+
+## **Capítulo 8: Manejo de Errores y Logging**
+
+### **Uso de ILogger**
+Registra todos los errores y eventos importantes usando `ILogger` para depurar y monitorear el sistema.
+
+```csharp
 _logger.LogError($"Error en el productor: {ex.Message}");
-Capítulo 8: Optimización de Rendimiento
-1. Reducción del Tamaño del Buffer
-El tamaño del buffer afecta la cantidad de memoria usada y el rendimiento. Ajusta el tamaño del buffer dependiendo de las características de tu sistema.
+```
 
-csharp
-Copiar
+---
+
+## **Capítulo 9: Optimización de Rendimiento**
+
+### **Reducción del Tamaño del Buffer**
+El tamaño del buffer puede ajustarse para mejorar la eficiencia. Si se tienen grandes volúmenes de datos, un buffer más grande puede ser más rápido.
+
+```csharp
 var buffer = new byte[32768]; // 32 KB
-2. Uso de MemoryPool<byte>
-Usar MemoryPool<byte> reduce la asignación y fragmentación de memoria, mejorando la eficiencia.
+```
 
-Capítulo 9: Pruebas Automatizadas
-1. Pruebas Unitarias
-Usa pruebas unitarias para garantizar que los componentes clave como ExchangeRateProcessor funcionen correctamente.
+### **Uso de `MemoryPool<byte>`**
+Usar `MemoryPool<byte>` ayuda a reducir la asignación y fragmentación de memoria, mejorando la eficiencia.
 
-Ejemplo de Prueba Unitaria
-csharp
-Copiar
+---
+
+## **Capítulo 10: Pruebas Automatizadas**
+
+### **Pruebas Unitarias**
+Las pruebas unitarias aseguran que el código funcione correctamente en cualquier circunstancia. Aquí tienes un ejemplo para probar el procesador de datos:
+
+```csharp
 [Fact]
 public void ProcessEntry_ShouldStoreDataCorrectly()
 {
@@ -292,19 +245,34 @@ public void ProcessEntry_ShouldStoreDataCorrectly()
     processor.ProcessEntry(new ExchangeRateDetail { Date = "2025-01-01", Value = "3.75", Type = "C" });
     Assert.Single(processor.GetResults());
 }
-Capítulo 10: Buenas Prácticas y Documentación
-1. Uso de Dependencias
-Usa inyección de dependencias para configurar componentes como HttpClient y ILogger.
+```
 
-csharp
-Copiar
+---
+
+## **Capítulo 11: Buenas Prácticas y Documentación**
+
+### **Uso de Dependencias**
+Usa inyección de dependencias para los componentes como `HttpClient` y `ILogger`:
+
+```csharp
 services.AddHttpClient<ExchangeRateApi>();
 services.AddLogging();
-2. Monitoreo y Métricas
+```
+
+### **Monitoreo y Métricas**
 Implementa monitoreo para medir el rendimiento del sistema y detectar cuellos de botella.
 
-Conclusión
-Este curso te ha proporcionado una comprensión completa de cómo manejar y procesar grandes volúmenes de datos de manera eficiente usando streams en C#, siguiendo los principios de Clean Architecture y utilizando técnicas avanzadas como el procesamiento paralelo.
+---
 
-Ahora estás listo para construir aplicaciones escalables y eficientes que procesen datos en tiempo real sin comprometer la memoria.
+## **Conclusión**
+
+Con este curso, ahora sabes cómo:
+1. Procesar datos desde un stream de manera eficiente.
+2. Diseñar y organizar tu código con **Clean Architecture**.
+3. Optimizar el rendimiento y manejar errores correctamente.
+
+### **¿Estás listo para aplicar lo aprendido?**
+
+¡Gracias por participar en este curso! 😊
+
 

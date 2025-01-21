@@ -50,48 +50,132 @@ En este curso aprenderás a manejar grandes volúmenes de datos de manera eficie
 
 ---
 
-## **Capítulo 2: Streams en C#**
 
-### **¿Qué es un stream?**
-Un stream es una secuencia de datos que fluye de un origen a un destino. Es un flujo continuo de bytes que se puede leer o escribir de manera incremental. Los streams son una parte esencial para manejar grandes cantidades de datos sin sobrecargar la memoria del sistema.
+# Módulo 2: Streams en C#
 
-### **Operaciones Básicas con Streams**
+### ¿Qué es un Stream?
 
-#### **Ejemplo de Lectura desde un Stream**
+Un **Stream** en C# es una secuencia de bytes que fluye desde un origen hasta un destino. Los Streams se utilizan para leer o escribir datos de manera **secuencial** y **gradual**. La principal ventaja de usar Streams es que no es necesario cargar todo el archivo o datos en memoria a la vez, lo que es crucial cuando se maneja una gran cantidad de datos o archivos grandes.
+
+#### Tipos de Streams en C#:
+1. **FileStream**: Para trabajar con archivos en disco.
+2. **MemoryStream**: Utiliza la memoria para almacenar los datos.
+3. **NetworkStream**: Para leer y escribir datos desde una conexión de red.
+4. **BufferedStream**: Agrega un búfer de memoria para optimizar las operaciones de lectura y escritura.
+
+---
+
+### Lectura Asíncrona desde un Stream
+
+Uno de los aspectos más poderosos de los Streams es su capacidad para leer datos de manera asíncrona. Esto significa que podemos leer fragmentos de datos sin bloquear el hilo principal de ejecución, lo cual es muy útil en aplicaciones de alto rendimiento.
+
+#### Código 1: Lectura Asíncrona de un Stream
+
 ```csharp
-using System;
-using System.IO;
-
-class StreamExample
+private async Task ProcessStreamAsync(Stream stream, Action<ExchangeRateDetail> processEntry)
 {
-    static async Task Main()
+    var buffer = new byte[8192];  // Creamos un buffer de 8192 bytes
+    int bytesRead;  // Variable para almacenar la cantidad de bytes leídos
+
+    // Mientras haya datos por leer en el stream
+    while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
     {
-        using var stream = new FileStream("archivo.txt", FileMode.Open);
-        byte[] buffer = new byte[1024];
-        int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-        Console.WriteLine($"Bytes leídos: {bytesRead}");
+        var reader = new Utf8JsonReader(new ReadOnlySpan<byte>(buffer, 0, bytesRead));
+
+        // Procesar cada fragmento de datos leídos
+        while (reader.Read())
+        {
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                var entry = JsonSerializer.Deserialize<ExchangeRateDetail>(ref reader);
+                if (entry != null)
+                    processEntry(entry);  // Procesamos la entrada (callback)
+            }
+        }
     }
 }
 ```
 
-#### **Ejemplo de Escritura en un Stream**
-```csharp
-using System;
-using System.IO;
+### Desglosando el Código
 
-class StreamExample
-{
-    static async Task Main()
-    {
-        using var stream = new FileStream("output.txt", FileMode.Create);
-        byte[] data = new byte[] { 65, 66, 67 }; // "ABC"
-        await stream.WriteAsync(data, 0, data.Length);
-        Console.WriteLine("Datos escritos.");
-    }
-}
+1. **Buffer de Lectura**:
+   ```csharp
+   var buffer = new byte[8192];  // 8 KB de tamaño para el buffer
+   ```
+   Se crea un **buffer** de 8192 bytes (8 KB) para almacenar los datos que se leen del **Stream**.
+
+2. **Lectura Asíncrona**:
+   ```csharp
+   bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+   ```
+   Aquí, estamos usando `ReadAsync` para leer los datos del **Stream** de manera asíncrona. `await` asegura que el hilo principal no se bloquee mientras se leen los datos.
+
+3. **Procesamiento de Datos JSON**:
+   ```csharp
+   var reader = new Utf8JsonReader(new ReadOnlySpan<byte>(buffer, 0, bytesRead));
+   ```
+   Usamos `Utf8JsonReader` para leer los datos de tipo **JSON** dentro del buffer.
+
+4. **Lectura de Objetos JSON**:
+   ```csharp
+   while (reader.Read())
+   {
+       if (reader.TokenType == JsonTokenType.StartObject)
+       {
+           var entry = JsonSerializer.Deserialize<ExchangeRateDetail>(ref reader);
+           if (entry != null)
+               processEntry(entry);
+       }
+   }
+   ```
+   Este ciclo lee cada token dentro del JSON y deserializa el objeto cuando encuentra un token de tipo `StartObject`.
+
+---
+
+### Escritura Asíncrona en un Stream
+
+Al igual que leemos de un Stream, podemos escribir datos en un **Stream** de manera asíncrona. Esto también ayuda a evitar bloqueos en el hilo principal.
+
+#### Código 2: Escritura Asíncrona en un Stream
+
+```csharp
+using var stream = new FileStream("archivo.txt", FileMode.Create);  // Abrir archivo para escritura
+byte[] buffer = Encoding.UTF8.GetBytes("Hola, Mundo");  // Convertir el texto a bytes
+await stream.WriteAsync(buffer, 0, buffer.Length);  // Escribir en el stream de forma asíncrona
 ```
 
 ---
+
+### Beneficios de Usar Streams
+
+1. **Eficiencia en Memoria**: Los Streams permiten procesar fragmentos de datos sin cargarlos completamente en memoria.
+2. **Procesamiento Incremental**: Los Streams permiten procesar datos conforme llegan.
+3. **Optimización de Desempeño**: Al leer o escribir de manera asíncrona, el uso de Streams optimiza el tiempo de respuesta de la aplicación.
+
+---
+
+### Diagrama de Procesamiento Asíncrono con Streams
+
+```plaintext
+[Start] -> [Initialize Stream] -> [ReadAsync Data] -> [Process Data in Buffer] 
+     |                      |                        |
+     v                      v                        v
+ [Data Processed] -> [WriteAsync Data] -> [Close Stream]
+```
+
+---
+
+### Conclusión del Módulo 2
+
+En este módulo, aprendiste cómo funcionan los **Streams** en C# para leer y escribir datos de manera eficiente y asíncrona, mejorando el rendimiento en aplicaciones que procesan grandes volúmenes de datos. Los **Streams** son herramientas fundamentales cuando se trabaja con archivos grandes, redes o cualquier tipo de datos que necesite ser procesado sin sobrecargar la memoria.
+
+---
+
+**Siguientes Pasos:**
+- Experimenta con la lectura y escritura de Streams en tus propios proyectos.
+- Profundiza en el uso de otros tipos de **Streams** como `MemoryStream` y `NetworkStream`.
+- Explora la **serialización de datos JSON** y cómo se puede usar `Utf8JsonReader` para procesar datos complejos de manera eficiente.
+
 
 ## **Capítulo 3: Clean Architecture**
 

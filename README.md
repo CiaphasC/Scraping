@@ -3,17 +3,215 @@
 
 
 
+
+# Módulo 1: Introducción al Curso y Fundamentos del Proyecto
+
+Este es el primer módulo de un curso detallado en el que aprenderemos a **trabajar con Streams en C#** y a aplicar la **Clean Architecture** en proyectos de software. A lo largo de este curso, abordaremos los conceptos fundamentales de cómo organizar el código, optimizar el rendimiento y garantizar que las aplicaciones sean escalables y fáciles de mantener.
+
+En este módulo, proporcionamos una **introducción general** a los conceptos y las herramientas que utilizaremos en el curso. Nos centraremos en el análisis del código base, que se utiliza para obtener tasas de cambio desde una API externa, procesar los datos de manera eficiente y presentarlos al usuario.
+
+## Objetivos del Módulo
+
+1. **Entender la estructura básica de un proyecto en C#** que sigue los principios de **Clean Architecture**.
+2. **Aprender a consumir y procesar datos desde una API externa**.
+3. **Introducir los conceptos de Streams en C#** y su uso para manejar grandes volúmenes de datos de manera eficiente.
+4. **Implementar el procesamiento de datos de forma asíncrona** para optimizar el rendimiento de la aplicación.
+
+Este módulo es clave para establecer las bases de cómo estructurar y organizar el código en aplicaciones modernas y escalables.
+
 ---
 
-## **Introducción: ¿Qué aprenderás en este curso?**
+## 1. ¿Qué es Clean Architecture?
 
-En este curso aprenderás a manejar grandes volúmenes de datos de manera eficiente utilizando streams en C#. Aprenderás a:
-- **Procesar datos en tiempo real** sin cargarlos completamente en memoria.
-- **Aplicar principios de Clean Architecture** para crear sistemas escalables.
-- **Optimizar el rendimiento** de tu aplicación utilizando técnicas avanzadas como procesamiento paralelo y pipelines.
-- **Manejar errores** de manera eficiente y registrar eventos usando **ILogger**.
+**Clean Architecture** es un patrón de diseño que promueve la **separación de responsabilidades** dentro de una aplicación, lo que hace que el código sea más fácil de entender, probar y mantener. La idea principal es separar la lógica de negocio del código relacionado con la infraestructura, como el acceso a bases de datos, servicios externos o la interfaz de usuario.
+
+### Estructura de Clean Architecture
+
+La arquitectura limpia divide el código en capas bien definidas. Cada capa tiene una responsabilidad distinta y solo puede depender de capas **más internas**. Las capas son:
+
+1. **Capa de Dominio (Core)**: Contiene las entidades del negocio y las reglas que gobiernan el sistema. Esta capa es **independiente** de cualquier infraestructura o tecnología.
+2. **Capa de Aplicación (Application)**: Implementa la lógica de negocio o casos de uso de la aplicación. Esta capa interactúa con la capa de **Dominio** y la de **Infraestructura**.
+3. **Capa de Infraestructura (Infrastructure)**: Esta capa maneja los detalles técnicos, como el acceso a bases de datos, servicios web, API externas, etc.
+4. **Capa de Presentación (Presentation)**: Se encarga de la interfaz con el usuario (por ejemplo, aplicaciones de consola, aplicaciones web, etc.).
+
+El siguiente diagrama ilustra cómo se estructuran las capas en Clean Architecture:
+
+```mermaid
+graph LR
+    A[Presentation Layer] --> B[Application Layer]
+    B --> C[Domain Layer]
+    C --> D[Infrastructure Layer]
+    classDef layerStyle fill:#F9F,stroke:#333,stroke-width:4px;
+    class A,B,C,D layerStyle;
+    class A fill:#FFDDC1;
+    class B fill:#FFABAB;
+    class C fill:#FFC3A0;
+    class D fill:#FF7F50;
+```
 
 ---
+
+## 2. Fundamentos del Código Base
+
+El código que vamos a analizar y trabajar en este curso está diseñado para consumir datos de una API pública que ofrece las tasas de cambio de divisas. A continuación, detallaremos cómo cada parte del código contribuye a la estructura del proyecto.
+
+### **Clase `ExchangeRateDetail` (Capa de Dominio)**
+
+```csharp
+public class ExchangeRateDetail
+{
+    [JsonPropertyName("fecPublica")]
+    public string Date { get; set; } = string.Empty;
+
+    [JsonPropertyName("valTipo")]
+    public string Value { get; set; } = string.Empty;
+
+    [JsonPropertyName("codTipo")]
+    public string Type { get; set; } = string.Empty;
+}
+```
+
+**Explicación:**
+- Esta clase **representa una entidad de dominio** que contiene los detalles de las tasas de cambio. Está definida en la capa de **Dominio**, que es donde residen las reglas del negocio.
+- Los atributos como `Date`, `Value` y `Type` corresponden a los datos que obtendremos desde la API.
+- Usamos **`JsonPropertyName`** para mapear las propiedades JSON a las propiedades del objeto C#.
+
+### **Clase `ExchangeRateProcessor` (Capa de Aplicación)**
+
+```csharp
+public class ExchangeRateProcessor : IExchangeRateProcessor
+{
+    private readonly Dictionary<string, ExchangeRateResult> _results = new();
+
+    public void ProcessEntry(ExchangeRateDetail entry)
+    {
+        if (!_results.ContainsKey(entry.Date))
+            _results[entry.Date] = new ExchangeRateResult { Fecha = entry.Date };
+
+        if (entry.Type == "C")
+            _results[entry.Date].Compra = entry.Value;
+        else if (entry.Type == "V")
+            _results[entry.Date].Venta = entry.Value;
+    }
+
+    public IEnumerable<ExchangeRateResult> GetResults() => _results.Values;
+}
+```
+
+**Explicación:**
+- La clase `ExchangeRateProcessor` es parte de la **capa de aplicación** y se encarga de procesar los datos recibidos desde la API.
+- **`ProcessEntry`** toma un objeto `ExchangeRateDetail` y lo procesa. Si la fecha no existe en el diccionario `_results`, se crea una nueva entrada.
+- Dependiendo del tipo (`C` para compra, `V` para venta), se asigna el valor correspondiente.
+- Finalmente, **`GetResults`** devuelve los resultados procesados.
+
+### **Clase `ExchangeRateApi` (Capa de Infraestructura)**
+
+```csharp
+public class ExchangeRateApi : IExchangeRateApi
+{
+    private const string ApiUrl = "https://e-consulta.sunat.gob.pe/cl-at-ittipcam/tcS01Alias/listarTipoCambio";
+    private const string ApiToken = "xon89wgbu8o6330q1mida90siv1mtkj1";
+
+    private readonly HttpClient _httpClient;
+
+    public ExchangeRateApi(HttpClient httpClient)
+    {
+        _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    }
+
+    public async Task ProcessExchangeRatesAsync(int year, int month, Action<ExchangeRateDetail> processEntry)
+    {
+        var payload = new
+        {
+            anio = year,
+            mes = month - 1, // Ajuste de mes para la API
+            token = ApiToken
+        };
+
+        using var payloadStream = new MemoryStream();
+        await JsonSerializer.SerializeAsync(payloadStream, payload);
+        payloadStream.Position = 0;
+
+        using var content = new StreamContent(payloadStream);
+        content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+
+        using var response = await _httpClient.PostAsync(ApiUrl, content);
+        response.EnsureSuccessStatusCode();
+
+        await using var responseStream = await response.Content.ReadAsStreamAsync();
+        await ProcessStreamAsync(responseStream, processEntry);
+    }
+
+    private async Task ProcessStreamAsync(Stream stream, Action<ExchangeRateDetail> processEntry)
+    {
+        var buffer = new byte[8192];
+        int bytesRead;
+
+        while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+        {
+            var reader = new Utf8JsonReader(new ReadOnlySpan<byte>(buffer, 0, bytesRead));
+
+            while (reader.Read())
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    var entry = JsonSerializer.Deserialize<ExchangeRateDetail>(ref reader);
+                    if (entry != null)
+                        processEntry(entry);
+                }
+            }
+        }
+    }
+}
+```
+
+**Explicación:**
+- La clase `ExchangeRateApi` es parte de la **capa de infraestructura** y se encarga de interactuar con la API externa.
+- Se usa `HttpClient` para hacer una solicitud **POST** a la API, enviando los parámetros requeridos (año, mes y token).
+- La respuesta de la API se recibe en formato JSON, que luego se procesa en **fragmentos** utilizando **Streams** asíncronos.
+
+---
+
+## 3. Procesamiento de Datos Asíncronos
+
+### **¿Por qué usar procesamiento asíncrono?**
+
+En aplicaciones que interactúan con servicios externos, como APIs, el uso de **operaciones asíncronas** es crucial para no bloquear el hilo principal de ejecución. Cuando solicitamos datos desde una API externa, la operación puede tardar algún tiempo. Si no utilizamos asincronía, la aplicación se detendría hasta que obtuviéramos la respuesta, lo que afectaría la capacidad de respuesta de la interfaz de usuario y otros procesos.
+
+---
+
+## Diagrama del Flujo del Proyecto
+
+El siguiente diagrama muestra cómo se procesan los datos a través de las diferentes capas de la aplicación, siguiendo la **Clean Architecture**:
+
+```mermaid
+graph TD
+    A[Presentation Layer] --> B[Application Layer]
+    B --> C[Domain Layer]
+    C --> D[Infrastructure Layer]
+    classDef layerStyle fill:#F9F,stroke:#333,stroke-width:4px;
+    class A,B,C,D layerStyle;
+    class A fill:#FFDDC1;
+    class B fill:#FFABAB;
+    class C fill:#FFC3A0;
+    class D fill:#FF7F50;
+```
+
+---
+
+## Conclusión del Módulo 1
+
+En este módulo, aprendiste sobre la **estructura básica de una aplicación en C#** siguiendo la **Clean Architecture**, y cómo se implementan los principios de separación de responsabilidades en un proyecto real. A través del ejemplo de consumo de datos desde una API externa, entendiste cómo procesar datos de manera asíncrona utilizando **Streams**.
+
+El uso de **Clean Architecture** permite que tu código sea más modular, escalable y fácil de mantener. La interacción con **APIs externas** y el **procesamiento eficiente de datos** son componentes clave en muchas aplicaciones modernas.
+
+---
+
+**Siguientes Pasos:**
+- Implementa **Clean Architecture** en proyectos más complejos.
+- Profundiza en el uso de **Streams** y **operaciones asíncronas** en C#.
+- Experimenta con el consumo de otras **APIs** y el procesamiento de datos en tiempo real.
+
 
 
 
@@ -846,10 +1044,3 @@ En este módulo, aprendiste cómo utilizar **procesamiento asíncrono** y **para
 - Experimenta con el procesamiento asíncrono en proyectos que interactúan con servicios externos.
 - Investiga técnicas avanzadas de **paralelismo** y **concurrencia** en C# para maximizar el rendimiento en aplicaciones complejas.
 - Profundiza en el uso de **caching** y otras optimizaciones de rendimiento en sistemas distribuidos.
-```mermaid
-graph LR
-    A[Start] --> B{Is it working?}
-    B -- Yes --> C[Great!]
-    B -- No --> D[Fix it!]
-    D --> B
-

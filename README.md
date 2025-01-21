@@ -846,5 +846,10 @@ En este módulo, aprendiste cómo utilizar **procesamiento asíncrono** y **para
 - Experimenta con el procesamiento asíncrono en proyectos que interactúan con servicios externos.
 - Investiga técnicas avanzadas de **paralelismo** y **concurrencia** en C# para maximizar el rendimiento en aplicaciones complejas.
 - Profundiza en el uso de **caching** y otras optimizaciones de rendimiento en sistemas distribuidos.
-
+```mermaid
+graph LR
+    A[Start] --> B{Is it working?}
+    B -- Yes --> C[Great!]
+    B -- No --> D[Fix it!]
+    D --> B
 
